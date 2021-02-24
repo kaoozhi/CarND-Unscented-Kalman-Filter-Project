@@ -3,6 +3,9 @@
 
 #include "Eigen/Dense"
 #include "measurement_package.h"
+#include <vector>
+
+
 
 class UKF {
  public:
@@ -27,7 +30,7 @@ class UKF {
    * matrix
    * @param delta_t Time between k and k+1 in s
    */
-  void Prediction(double delta_t);
+  void Prediction(double dt);
 
   /**
    * Updates the state and the state covariance matrix using a laser measurement
@@ -41,7 +44,12 @@ class UKF {
    */
   void UpdateRadar(MeasurementPackage meas_package);
 
-
+  /**
+   * Generate sigma points for states
+   * @param Xsig_out
+   */
+  void GenerateSigmaPoints(Eigen::MatrixXd* Xsig_out);
+  
   // initially set to false, set to true in first call of ProcessMeasurement
   bool is_initialized_;
 
@@ -95,6 +103,12 @@ class UKF {
 
   // Sigma point spreading parameter
   double lambda_;
+
+  std::vector<double> nis_radar_{};
+  std::vector<double> nis_lidar_{};
+  
+  double nis_radar_score_;
+  double nis_lidar_score_;
 };
 
 #endif  // UKF_H
